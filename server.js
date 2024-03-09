@@ -47,32 +47,62 @@ app.get('/getAccessToken', async (req, res) => {
     }
 })
 
-app.post('/updateContact', async (req, res) => {
-    // value = req.body.value
-    const { accessToken, location } = req.query
-
-    //get all contacts
-    const options = {
-        method: 'GET',
-        url: 'https://services.leadconnectorhq.com/contacts/',
-        params: { locationId: location },
-        headers: {
-            Authorization: `Bearer ${accessToken}`,
-            Version: '2021-07-28',
-            Accept: 'application/json'
-        }
-    };
-
+app.put('/updateContact', async (req, res) => {
     try {
-        const { data } = await axios.request(options);
-        console.log(data)
 
-        const contactFound = data.contacts.filter((contact) =>
-            contact.customFields.some((field) => field.key === "DFS Booking Zoom Link")
-        );
+        const { accessToken, location } = req.query
 
-      
-        res.json(data)
+        //get all contacts
+        // const options = {
+        //     method: 'GET',
+        //     url: 'https://services.leadconnectorhq.com/contacts/',
+        //     params: { locationId: location },
+        //     headers: {
+        //         Authorization: `Bearer ${accessToken}`,
+        //         Version: '2021-07-28',
+        //         Accept: 'application/json'
+        //     }
+        // };
+
+        // const { data } = await axios.request(options);
+        // console.log(data)
+        // res.json(data)
+
+        // const contactFound = data.contacts.filter((contact) =>
+        //     contact.customFields.some((field) => field.value.length > 0)
+        // );
+
+        // let contactDetails = contactFound[0]
+        // // contactDetails.customFields[0].value = "TES"
+        // // delete contactDetails.id
+
+        // console.log(contactDetails)
+
+        // for updating the contact
+        const optionsForUpdation = {
+            method: 'PUT',
+            url: `https://services.leadconnectorhq.com/contacts/L8p81677ltbSPOMnCuFy`,
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              Version: '2021-07-28',
+              'Content-Type': 'application/json',
+              Accept: 'application/json'
+            },
+            data: {
+                customFields: [
+                    {
+                        id: "L5JN3pehxg7yK6VES0lY",
+                        value: "TEST"
+                    }
+                ]
+            }
+          };
+
+
+        const updatedDetails = await axios.request(optionsForUpdation);
+        console.log("updated",updatedDetails.data);
+        res.status(200).json(updatedDetails.data)
+
 
 
     } catch (error) {
